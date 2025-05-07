@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+
+  app:
+    build: .
+    container_name: app
+    depends_on:
+      - db
+    ports:
+      - "8877:8080"
+    networks:
+      - webrise-network
+
+  db:
+    image: postgres:15
+    container_name: db
+    environment:
+      POSTGRES_DB: subs
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5544:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: "always"
+    networks:
+      - webrise-network
+
+networks:
+  webrise-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
