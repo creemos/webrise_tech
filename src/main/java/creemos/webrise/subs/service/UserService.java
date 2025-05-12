@@ -20,7 +20,7 @@ public class UserService {
     private UserRepository userRepository;
 
     public User getUser(Integer id) {
-        log.info("Получен id: {}", id);
+        log.info("Получен пользователь с id: {}", id);
         return userRepository.getReferenceById(id);
     }
 
@@ -38,9 +38,9 @@ public class UserService {
         return userRepository.save(old);
     }
 
-    public void deleteUser(User user) {
-        userRepository.delete(user);
-        log.info("Пользователь с id {} удалён", user.getId());
+    public void deleteUser(Integer id) {
+        userRepository.deleteById(id);
+        log.info("Пользователь с id {} удалён", id);
     }
 
 

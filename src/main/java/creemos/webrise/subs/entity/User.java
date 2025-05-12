@@ -34,6 +34,6 @@ public class User {
     String description;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<Subscribe> subscribes;
+    List<Subscription> subscriptions;
 
 }

@@ -21,12 +21,21 @@ public class SubscriptionService {
     private SubscriptionRepository subscriptionRepository;
 
     public List<TopSubscription> getTop() {
-        Pageable top3 = PageRequest.of(0, 3);
-        return subscriptionRepository.findTopSubscribes(top3);
+        return subscriptionRepository.findTopSubscribes().stream()
+                .map(o -> new TopSubscription((String) o[0], ((Number) o[1]).intValue()))
+                .toList();
     }
 
     public void addSubscription(Subscription subscription) {
         subscriptionRepository.save(subscription);
+    }
+
+    public List<Subscription> getUsersSubs(Integer id) {
+        return subscriptionRepository.getSubscriptionsByUser(id);
+    }
+
+    public void deleteSubscription(Integer id) {
+        subscriptionRepository.deleteById(id);
     }
 
 }

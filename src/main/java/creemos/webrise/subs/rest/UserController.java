@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @author kay 06.05.2025
  */
@@ -25,8 +27,9 @@ public class UserController {
     // users
 
     @PostMapping
-    void createUser(@RequestBody User user) {
+    ResponseEntity<String> createUser(@RequestBody User user) {
         userService.createUser(user);
+        return ResponseEntity.ok("Пользователь создан!");
     }
 
     @GetMapping("/{id}")
@@ -40,22 +43,30 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<Void> deleteUser(@PathVariable Integer id){
-        User user = userService.getUser(id);
-        if (user == null) {
-            return ResponseEntity.notFound().build();
-        }
-        userService.deleteUser(user);
-        return ResponseEntity.noContent().build();
+    ResponseEntity<String> deleteUser(@PathVariable Integer id){
+        userService.deleteUser(id);
+        return ResponseEntity.ok("Пользователь удален!");
     }
 
     //subs
 
     @PostMapping("/{id}/subscriptions")
-    void createSubscribe(@PathVariable Integer id, @RequestBody Subscription subscription) {
+    ResponseEntity<String> createSubscription(@PathVariable Integer id, @RequestBody Subscription subscription) {
         subscription.setUser(userService.getUser(id));
         subscriptionService.addSubscription(subscription);
+        return ResponseEntity.ok("Подписка добавлена!");
     }
 
+    @GetMapping("/{id}/subscriptions")
+    List<Subscription> getUsersSubs(@PathVariable Integer id) {
+        return subscriptionService.getUsersSubs(id);
+    }
 
+    // если НЕ использовать справочник подписок, то подразумевается передача первичного ключа из таблицы subscriptions,
+    // в противном случае нужно искать по связке пользователь + тип подписки
+    @DeleteMapping("/{id}/subscriptions/{sub_id}")
+    ResponseEntity<String> deleteSubscription(@PathVariable Integer id, @PathVariable(name = "sub_id") Integer subId) {
+        subscriptionService.deleteSubscription(subId);
+        return ResponseEntity.ok("Подписка удалена!");
+    }
 }
